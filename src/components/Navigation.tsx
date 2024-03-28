@@ -6,7 +6,7 @@ const Navigation = () => {
     inActiveLink + " bg-white text-primaryOrangeHex rounded-l-md";
   const pathname = location.pathname;
   return (
-    <aside className="text-white p-4 pr-0">
+    <aside className="text-white p-4 pr-0 min-w-fit">
       <Link to={"/"} className={"flex items-center gap-1 mb-4 mr-4"}>
         <svg
           xmlns="http://www.w3.org/2000/svg"

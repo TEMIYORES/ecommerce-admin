@@ -3,31 +3,51 @@ import Layout from "./Layout";
 import { useNewProductMutation } from "../features/product/productApiSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import { ReactSortable } from "react-sortablejs";
+import UploadImage from "./UploadImage";
 
 const NewProduct = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [newProduct, { isLoading }] = useNewProductMutation();
+  const [imageUrls, setImageUrls] = useState<any>([]);
+
   const [errMsg, setErrMsg] = useState("");
   const navigate = useNavigate();
   const errRef = useRef<HTMLParagraphElement>(null);
-
+  const [imageData, setImageData] = useState<any>([]);
+  const updateImages = (newFiles: string[], myFiles: any) => {
+    setImageUrls((prev: string) => [...prev, ...newFiles]);
+    if (myFiles) {
+      Object.keys(myFiles).forEach((key) => {
+        setImageData((prev: any[]) => [...prev, myFiles.item(key)]);
+      });
+    }
+  };
+  useEffect(() => {
+    console.log(imageData);
+  }, [imageData]);
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      const formData = new FormData();
+      formData.append("name", name.trim());
+      formData.append("description", description.trim());
+      formData.append("price", parseFloat(price).toString());
+
+      imageData.forEach((data) => {
+        formData.append(data.name, data);
+      });
+
       // Sending data to server
-      const response = await newProduct({
-        name: name.trim(),
-        description: description.trim(),
-        price: parseFloat(price),
-      }).unwrap();
-      // dispatch(setAuth({ ...userData }));
+      const response: { message: string } = await newProduct(formData).unwrap();
       toast.success(response.message);
       //   Clear input fields
       setName("");
       setDescription("");
       setPrice("");
+      setImageUrls([]);
       navigate(-1);
     } catch (err: any) {
       if (!err?.data) {
@@ -43,6 +63,7 @@ const NewProduct = () => {
       errRef?.current?.focus();
     }
   };
+
   useEffect(() => {
     setErrMsg("");
   }, [name, description, price]);
@@ -87,7 +108,46 @@ const NewProduct = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
+       
+        <label>Photos</label>
 
+        <div className="mb-2">
+          <p>Only 4 photos can be uploaded.</p>
+          <div className="flex items-center gap-2">
+            {imageUrls.length > 0 ? (
+              <div className="flex items-center mt-2 gap-2">
+                <ReactSortable
+                  className="flex items-center gap-2"
+                  list={imageUrls}
+                  setList={setImageUrls}
+                >
+                  {imageUrls?.map((image: string, index: number) => {
+                    return (
+                      <img
+                        key={index}
+                        className="w-24 h-24 border border-primaryOrangeHex object-cover rounded-lg"
+                        src={image}
+                        alt=""
+                      />
+                    );
+                  })}
+                </ReactSortable>
+                {imageUrls?.length < 4 && (
+                  <UploadImage updateImages={updateImages} />
+                )}
+              </div>
+            ) : (
+              <>
+                <UploadImage updateImages={updateImages} />
+                {/* <div className="flex items-center gap-5">
+                  <div className="bg-primaryLightOrangeHex p-2 rounded-md">
+                    No photos of this product
+                  </div>
+                </div> */}
+              </>
+            )}
+          </div>
+        </div>
         <label htmlFor="product_desc">Product Description</label>
         <textarea
           placeholder="Description"

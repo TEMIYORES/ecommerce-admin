@@ -8,7 +8,7 @@ const EditProduct = () => {
   const { data, isLoading, isError, isSuccess, error } = useProductQuery({
     id,
   });
-
+  console.log({ data });
   let content;
   if (isLoading) {
     content = <h1>Loading...</h1>;
@@ -20,6 +20,8 @@ const EditProduct = () => {
           name={data?.name}
           description={data?.description}
           price={data?.price.toString()}
+          productImages={data?.productImages}
+          category={data?.category}
         />
       </>
     );

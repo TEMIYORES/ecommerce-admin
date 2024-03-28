@@ -6,15 +6,17 @@ export const productApiSlice = apiSlice.injectEndpoints({
       query: (credentials) => ({
         url: "/products",
         method: "POST",
-        body: { ...credentials },
+        body: credentials,
       }),
     }),
     updateProduct: builder.mutation({
-      query: (credentials) => ({
-        url: "/products",
-        method: "PUT",
-        body: { ...credentials },
-      }),
+      query: (credentials) => {
+        return {
+          url: "/products",
+          method: "PUT",
+          body: credentials,
+        };
+      },
     }),
     deleteProduct: builder.mutation({
       query: (credentials) => ({

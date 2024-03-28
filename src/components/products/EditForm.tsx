@@ -2,68 +2,78 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useUpdateProductMutation } from "../../features/product/productApiSlice";
 import { useNavigate } from "react-router";
-import { useGetImagesQuery } from "../../features/upload/uploadApiSlice";
 import UploadImage from "../UploadImage";
-import Spinner from "../Spinner";
+// import Spinner from "../Spinner";
 import { ReactSortable } from "react-sortablejs";
+import { useCategoriesQuery } from "../../features/categories/categoryApiSlice";
 interface formDataProps {
   id: string;
   name: string;
   description: string;
-  price: number;
-  imageUrls: null | string[];
+  price: string;
+  productImages: string[];
+  category: string;
 }
 const EditForm = ({
   id,
   name: existingName,
   description: existingDescription,
   price: existingPrice,
-}: {
-  id: string;
-  name: string;
-  description: string;
-  price: string;
-}) => {
+  productImages: existingProductImages,
+  category: existingCategory,
+}: formDataProps) => {
   const [name, setName] = useState(existingName);
   const [description, setDescription] = useState(existingDescription);
   const [price, setPrice] = useState(existingPrice);
+  const [category, setCategory] = useState(existingCategory);
   const [errMsg, setErrMsg] = useState("");
+  const [imageData, setImageData] = useState<any>([]);
   const navigate = useNavigate();
   const errRef = useRef<HTMLParagraphElement>(null);
   const [updateProduct, { isLoading: updateLoading }] =
     useUpdateProductMutation();
   const {
-    data,
-    isLoading: photoLoading,
-    isError,
-    isSuccess,
-    error,
-  } = useGetImagesQuery({ id });
-  const [imageUrls, setImageUrls] = useState(data?.images);
-  useEffect(() => {
-    console.log({ data });
-    setImageUrls(data?.images);
-  }, [data]);
-  const updateImages = (newFiles: string[]) => {
-    console.log({ newFiles });
-    setImageUrls((prev: string) => [...prev, ...newFiles]);
+    data: categories,
+    isLoading: fetchingCategories,
+    isSuccess: isCategoryFetched,
+    isError: isCategoryError,
+  } = useCategoriesQuery({});
+  const [imageUrls, setImageUrls] = useState<any>(existingProductImages);
+  console.log({ category });
+  const updateImages = (newFiles: string[], myFiles: any) => {
+    const imageslength = imageUrls.length + newFiles.length;
+    if (imageslength > 4) {
+      setErrMsg("Maximum of 4 files can be uploaded");
+    } else {
+      setImageUrls((prev: string) => [...prev, ...newFiles]);
+      if (myFiles) {
+        Object.keys(myFiles).forEach((key) => {
+          setImageData((prev: any[]) => [...prev, myFiles.item(key)]);
+        });
+      }
+    }
   };
-  useEffect(() => {
-    console.log({ imageUrls });
-  }, [imageUrls]);
+  console.log({ imageUrls });
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const formData: formDataProps = {
-        id,
-        name: name.trim(),
-        description: description.trim(),
-        price: parseFloat(price),
-        imageUrls: null,
-      };
-      if (imageUrls.length > 0) {
-        formData.imageUrls = imageUrls;
-      }
+      const formData = new FormData();
+      // const formData: formDataProps = {
+      //   id,
+      //   name: name.trim(),
+      //   description: description.trim(),
+      //   price: parseFloat(price),
+      // };
+      formData.append("id", id);
+      formData.append("name", name.trim());
+      formData.append("description", description.trim());
+      formData.append("price", parseFloat(price).toString());
+      formData.append("rawImageUrls", imageUrls);
+      formData.append("category", category);
+      imageData.forEach((data) => {
+        formData.append(data.name, data);
+      });
+
       // Sending data to server
       const response = await updateProduct(formData).unwrap();
       toast.success(response.message);
@@ -77,9 +87,8 @@ const EditForm = ({
       } else if (err?.status === 401) {
         setErrMsg(err.data.message);
       } else {
-        setErrMsg("Login Failed");
+        setErrMsg("Update Failed");
       }
-      navigate(-1);
     }
   };
 
@@ -90,7 +99,7 @@ const EditForm = ({
   const content = updateLoading ? (
     <h1>Loading...</h1>
   ) : (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} encType="multipart/form-data">
       <h1>Edit Product</h1>
       <p
         ref={errRef}
@@ -125,20 +134,31 @@ const EditForm = ({
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
+      <label htmlFor="product_name">Category</label>
+      <select value={category} onChange={(e) => setCategory(e.target.value)}>
+        <option value={""}>Uncategorized</option>
+        {fetchingCategories && <option>loading...</option>}
+        {isCategoryFetched &&
+          categories.map((category: { name: string; id: string }) => {
+            return <option key={category.id}>{category.name}</option>;
+          })}
+        {isCategoryError && (
+          <option>Can't fetch categories at the moment</option>
+        )}
+      </select>
       <label>Photos</label>
 
       <div className="mb-2">
         <p>Only 4 photos can be uploaded.</p>
         <div className="flex items-center gap-2">
-          {photoLoading && <Spinner />}
-          {isSuccess && imageUrls ? (
+          {imageUrls ? (
             <div className="flex items-center mt-2 gap-2">
               <ReactSortable
                 className="flex items-center gap-2"
                 list={imageUrls}
                 setList={setImageUrls}
               >
-                {imageUrls.map((image: string, index: number) => {
+                {imageUrls?.map((image: string, index: number) => {
                   return (
                     <img
                       key={index}
@@ -149,19 +169,20 @@ const EditForm = ({
                   );
                 })}
               </ReactSortable>
-              {imageUrls.length < 4 && (
-                <UploadImage id={id} updateImages={updateImages} />
+              {imageUrls?.length < 4 && (
+                <UploadImage updateImages={updateImages} />
               )}
             </div>
           ) : (
-            <UploadImage id={id} updateImages={updateImages} />
-            // <div className="flex items-center gap-5">
-            //   <div className="bg-primaryLightOrangeHex p-2 rounded-md">
-            //     No photos of this product
-            //   </div>
-            // </div>
+            <>
+              <UploadImage updateImages={updateImages} />
+              <div className="flex items-center gap-5">
+                <div className="bg-primaryLightOrangeHex p-2 rounded-md">
+                  No photos of this product
+                </div>
+              </div>
+            </>
           )}
-          {isError && <p>{JSON.stringify(error)}</p>}
         </div>
       </div>
       <label htmlFor="product_desc">Product Description</label>
