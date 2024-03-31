@@ -5,18 +5,31 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import { ReactSortable } from "react-sortablejs";
 import UploadImage from "./UploadImage";
+import { useCategoriesQuery } from "../features/categories/categoryApiSlice";
 
 const NewProduct = () => {
+  const navigate = useNavigate();
+  const [newProduct, { isLoading }] = useNewProductMutation();
+  const {
+    data: categories,
+    isLoading: fetchingCategories,
+    isSuccess: isCategoryFetched,
+    isError: isCategoryError,
+  } = useCategoriesQuery({});
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [newProduct, { isLoading }] = useNewProductMutation();
   const [imageUrls, setImageUrls] = useState<any>([]);
-
   const [errMsg, setErrMsg] = useState("");
-  const navigate = useNavigate();
   const errRef = useRef<HTMLParagraphElement>(null);
-  const [imageData, setImageData] = useState<any>([]);
+  const [imageData, setImageData] = useState<File[]>([]);
+  const [category, setCategory] = useState<string>("");
+  const [properties, setProperties] = useState<
+    { name: string; values: string[] }[]
+  >([]);
+  const [productProperties, setProductProperties] = useState<{
+    [key: string]: string;
+  }>({});
   const updateImages = (newFiles: string[], myFiles: any) => {
     setImageUrls((prev: string) => [...prev, ...newFiles]);
     if (myFiles) {
@@ -25,9 +38,7 @@ const NewProduct = () => {
       });
     }
   };
-  useEffect(() => {
-    console.log(imageData);
-  }, [imageData]);
+
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -35,6 +46,8 @@ const NewProduct = () => {
       formData.append("name", name.trim());
       formData.append("description", description.trim());
       formData.append("price", parseFloat(price).toString());
+      formData.append("category", category);
+      formData.append("properties", JSON.stringify(productProperties));
 
       imageData.forEach((data) => {
         formData.append(data.name, data);
@@ -63,6 +76,33 @@ const NewProduct = () => {
       errRef?.current?.focus();
     }
   };
+  const handleSetProductProperties = (name: string, value: string) => {
+    setProductProperties((prev) => {
+      const newProductProps: { [key: string]: string } = { ...prev };
+      newProductProps[name] = value;
+      return newProductProps;
+    });
+  };
+  useEffect(() => {
+    console.log(imageData);
+  }, [imageData]);
+  useEffect(() => {
+    if (category && categories?.length > 0) {
+      const selectedCategoryInfo = categories.find(
+        ({ name }: { name: string }) => category === name
+      );
+      if (selectedCategoryInfo.parentCategory) {
+        setProperties([
+          ...selectedCategoryInfo.properties,
+          ...selectedCategoryInfo.parentCategory.properties,
+        ]);
+      } else {
+        setProperties([...selectedCategoryInfo.properties]);
+      }
+    } else {
+      setProperties([]);
+    }
+  }, [categories, category, isCategoryFetched]);
 
   useEffect(() => {
     setErrMsg("");
@@ -108,7 +148,38 @@ const NewProduct = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-       
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <option value={""}>Uncategorized</option>
+          {fetchingCategories && <option>loading...</option>}
+          {isCategoryFetched &&
+            categories.map((category: { name: string; id: string }) => {
+              return <option key={category.id}>{category.name}</option>;
+            })}
+          {isCategoryError && (
+            <option>Can't fetch categories at the moment</option>
+          )}
+        </select>
+        {properties.length
+          ? properties.map((property) => {
+              return (
+                <div key={property.name} className="flex gap-1">
+                  {property.name}
+                  <select
+                    required
+                    value={productProperties[property.name]}
+                    onChange={(e) =>
+                      handleSetProductProperties(property.name, e.target.value)
+                    }
+                  >
+                    <option value="">select a value</option>
+                    {property.values.map((value: string) => (
+                      <option>{value}</option>
+                    ))}
+                  </select>
+                </div>
+              );
+            })
+          : null}
         <label>Photos</label>
 
         <div className="mb-2">

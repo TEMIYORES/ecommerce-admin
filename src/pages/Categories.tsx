@@ -12,6 +12,9 @@ const Categories = () => {
   const [name, setName] = useState("");
   const [id, setId] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [properties, setProperties] = useState<
+    { name: string; values: string }[]
+  >([]);
   const [newCategory, { isLoading: savingCategory }] = useNewCategoryMutation();
   const [updateCategory, { isLoading: updatingCategory }] =
     useUpdateCategoryMutation();
@@ -39,7 +42,7 @@ const Categories = () => {
     content = <h1>Loading...</h1>;
   } else if (isSuccess) {
     if (data.length > 0) {
-      content = (
+      content = !isEditing && (
         <table className="basic mt-2">
           <thead>
             <tr>
@@ -136,11 +139,15 @@ const Categories = () => {
       const response = await newCategory({
         name,
         parentCategory,
+        properties: properties.map((property) => ({
+          name: property.name,
+          values: property.values.split(","),
+        })),
       }).unwrap();
       // dispatch(setAuth({ ...userData }));
       toast.success(response.message);
       //   Clear input fields
-      setName("");
+      cancelEditing();
       refetchCategories();
     } catch (err: any) {
       if (!err?.data) {
@@ -156,6 +163,7 @@ const Categories = () => {
         setErrMsg("Product Failed to Add");
       }
       errRef?.current?.focus();
+      cancelEditing();
     }
   };
   const handleUpdate = async () => {
@@ -165,11 +173,15 @@ const Categories = () => {
         id,
         name,
         parentCategory,
+        properties: properties.map((property) => ({
+          name: property.name,
+          values: property.values.split(","),
+        })),
       }).unwrap();
       // dispatch(setAuth({ ...userData }));
       toast.success(response.message);
       //   Clear input fields
-      setName("");
+      cancelEditing();
       refetchCategories();
     } catch (err: any) {
       if (!err?.data) {
@@ -186,7 +198,14 @@ const Categories = () => {
       }
       errRef?.current?.focus();
     }
+    cancelEditing();
+  };
+  const cancelEditing = () => {
     setIsEditing(false);
+    setId("");
+    setName("");
+    setParentCategory("");
+    setProperties([]);
   };
   const goBack = () => {
     setIsDeleting(false);
@@ -198,6 +217,40 @@ const Categories = () => {
     setId(category.id);
     setName(category.name);
     setParentCategory(category.parentCategory?._id || "");
+    setProperties(
+      category?.properties.map(
+        ({ name, values }: { name: string; values: string[] }) => ({
+          name,
+          values: values.join(","),
+        })
+      ) || []
+    );
+  };
+  const addProperty = () => {
+    setProperties((prev) => [...prev, { name: "", values: "" }]);
+  };
+  const handlePropertyNameChange = (index: number, newName: string) => {
+    setProperties((prev) => {
+      const properties = [...prev];
+      console.log(properties[index].name);
+      properties[index] = { ...properties[index], name: newName };
+      return properties;
+    });
+  };
+  const handlePropertyValuesChange = (index: number, newValues: string) => {
+    setProperties((prev) => {
+      const properties = [...prev];
+      properties[index] = { ...properties[index], values: newValues };
+      return properties;
+    });
+  };
+  const removeProperty = (index: number) => {
+    setProperties((prev) => {
+      const properties = [...prev];
+      return properties.filter(
+        (property, propertyIndex) => index !== propertyIndex
+      );
+    });
   };
   return (
     <Layout>
@@ -216,29 +269,100 @@ const Categories = () => {
       <label htmlFor="category_name">
         {isEditing ? `Edit Category ${name}` : "New Category Name"}
       </label>
-      <form onSubmit={handleSubmit} className="flex items-center gap-1">
-        <input
-          className="mb-0"
-          type="text"
-          placeholder="Category Name"
-          id="category_name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <select
-          className="mb-0"
-          value={parentCategory}
-          onChange={(e) => setParentCategory(e.target.value)}
-        >
-          <option value={"0"}>No parent category</option>
-          {data?.length > 0 &&
-            data?.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-        </select>
-        <button>Save</button>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-1">
+        <div className="flex gap-1">
+          <input
+            className="mb-0"
+            type="text"
+            placeholder="Category Name"
+            id="category_name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <select
+            className="mb-0"
+            value={parentCategory}
+            onChange={(e) => setParentCategory(e.target.value)}
+          >
+            <option value={"0"}>No parent category</option>
+            {data?.length > 0 &&
+              data?.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+          </select>
+        </div>
+        <div>
+          <label>Properties</label>
+
+          <button className="btnflex" type="button" onClick={addProperty}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+            Add new property
+          </button>
+          {properties.length > 0 &&
+            properties.map((property, index) => {
+              return (
+                <div
+                  key={index.toString()}
+                  className="flex gap-1 my-2 items-center"
+                >
+                  <input
+                    type="text"
+                    placeholder="Property name (example:color)"
+                    value={property.name}
+                    className="mb-0"
+                    onChange={(e) =>
+                      handlePropertyNameChange(index, e.target.value)
+                    }
+                  />
+                  <input
+                    type="text"
+                    placeholder="Property values, comma seperated(example:blue,red)"
+                    className="mb-0"
+                    value={property.values}
+                    onChange={(e) =>
+                      handlePropertyValuesChange(index, e.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeProperty(index)}
+                    className="btnflex"
+                  >
+                    Remove
+                  </button>
+                </div>
+              );
+            })}
+        </div>
+        <div className="flex gap-2 my-2">
+          {isEditing && (
+            <button
+              className="bg-primaryRedHex w-fit"
+              type="button"
+              onClick={cancelEditing}
+            >
+              Cancel
+            </button>
+          )}
+          <button className="btnflex w-fit" type="submit">
+            Save
+          </button>
+        </div>
       </form>
       {content}
       {isDeleting && (

@@ -22,6 +22,7 @@ const EditProduct = () => {
           price={data?.price.toString()}
           productImages={data?.productImages}
           category={data?.category}
+          properties={data?.properties}
         />
       </>
     );

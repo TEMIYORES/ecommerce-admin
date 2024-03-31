@@ -127,6 +127,7 @@ table.basic thead tr td {
 }
 
 table.basic a,
-table.basic button {
+table.basic button,
+button.btnflex {
   @apply flex justify-center items-center gap-1 bg-primaryOrangeHex text-primaryWhiteHex px-4 py-2 rounded-md;
 }

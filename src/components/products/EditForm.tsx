@@ -13,6 +13,9 @@ interface formDataProps {
   price: string;
   productImages: string[];
   category: string;
+  properties?: {
+    [key: string]: string;
+  };
 }
 const EditForm = ({
   id,
@@ -21,13 +24,8 @@ const EditForm = ({
   price: existingPrice,
   productImages: existingProductImages,
   category: existingCategory,
+  properties: exisitingProperty,
 }: formDataProps) => {
-  const [name, setName] = useState(existingName);
-  const [description, setDescription] = useState(existingDescription);
-  const [price, setPrice] = useState(existingPrice);
-  const [category, setCategory] = useState(existingCategory);
-  const [errMsg, setErrMsg] = useState("");
-  const [imageData, setImageData] = useState<any>([]);
   const navigate = useNavigate();
   const errRef = useRef<HTMLParagraphElement>(null);
   const [updateProduct, { isLoading: updateLoading }] =
@@ -38,8 +36,20 @@ const EditForm = ({
     isSuccess: isCategoryFetched,
     isError: isCategoryError,
   } = useCategoriesQuery({});
+  const [name, setName] = useState(existingName);
+  const [description, setDescription] = useState(existingDescription);
+  const [price, setPrice] = useState(existingPrice);
+  const [category, setCategory] = useState(existingCategory);
+  const [errMsg, setErrMsg] = useState("");
+  const [imageData, setImageData] = useState<any>([]);
+  const [properties, setProperties] = useState<
+    { name: string; values: string[] }[] | undefined
+  >([]);
+  const [productProperties, setProductProperties] = useState<{
+    [key: string]: string;
+  }>(exisitingProperty || {});
   const [imageUrls, setImageUrls] = useState<any>(existingProductImages);
-  console.log({ category });
+
   const updateImages = (newFiles: string[], myFiles: any) => {
     const imageslength = imageUrls.length + newFiles.length;
     if (imageslength > 4) {
@@ -53,23 +63,17 @@ const EditForm = ({
       }
     }
   };
-  console.log({ imageUrls });
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      // const formData: formDataProps = {
-      //   id,
-      //   name: name.trim(),
-      //   description: description.trim(),
-      //   price: parseFloat(price),
-      // };
       formData.append("id", id);
       formData.append("name", name.trim());
       formData.append("description", description.trim());
       formData.append("price", parseFloat(price).toString());
       formData.append("rawImageUrls", imageUrls);
       formData.append("category", category);
+      formData.append("properties", JSON.stringify(productProperties));
       imageData.forEach((data) => {
         formData.append(data.name, data);
       });
@@ -92,9 +96,35 @@ const EditForm = ({
     }
   };
 
+  const handleSetProductProperties = (name: string, value: string) => {
+    setProductProperties((prev) => {
+      const newProductProps: { [key: string]: string } = { ...prev };
+      newProductProps[name] = value;
+      console.log({ newProductProps });
+      return newProductProps;
+    });
+  };
   useEffect(() => {
     setErrMsg("");
   }, [name, description, price]);
+
+  useEffect(() => {
+    if (category && categories?.length > 0) {
+      const selectedCategoryInfo = categories.find(
+        ({ name }: { name: string }) => category === name
+      );
+      if (selectedCategoryInfo?.parentCategory) {
+        setProperties([
+          ...selectedCategoryInfo.properties,
+          ...selectedCategoryInfo.parentCategory.properties,
+        ]);
+      } else {
+        setProperties(selectedCategoryInfo?.properties);
+      }
+    } else {
+      setProperties([]);
+    }
+  }, [categories, category, isCategoryFetched]);
 
   const content = updateLoading ? (
     <h1>Loading...</h1>
@@ -146,6 +176,27 @@ const EditForm = ({
           <option>Can't fetch categories at the moment</option>
         )}
       </select>
+      {properties?.length
+        ? properties?.map((property) => {
+            return (
+              <div key={property.name} className="flex gap-1">
+                {property.name}
+                <select
+                  required
+                  value={productProperties[property.name]}
+                  onChange={(e) =>
+                    handleSetProductProperties(property.name, e.target.value)
+                  }
+                >
+                  <option value="">select a value</option>
+                  {property.values.map((value: string) => (
+                    <option>{value}</option>
+                  ))}
+                </select>
+              </div>
+            );
+          })
+        : null}
       <label>Photos</label>
 
       <div className="mb-2">
