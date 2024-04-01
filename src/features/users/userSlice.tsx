@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { removeAuth } from "../auth/authSlice";
-import { clearProducts } from "../product/productsSlice";
 
 interface initialStateProps {
   name: string | null;
@@ -24,8 +22,7 @@ const userSlice = createSlice({
       state.name = null;
       state.email = null;
       state.picture = null;
-      removeAuth();
-      clearProducts();
+     
     },
   },
 });

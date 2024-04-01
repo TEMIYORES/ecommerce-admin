@@ -57,12 +57,19 @@ const EditForm = ({
     } else {
       setImageUrls((prev: string) => [...prev, ...newFiles]);
       if (myFiles) {
-        Object.keys(myFiles).forEach((key) => {
-          setImageData((prev: any[]) => [...prev, myFiles.item(key)]);
+        Object.keys(myFiles).forEach((key, index) => {
+          setImageData((prev: any[]) => [
+            ...prev,
+            { url: newFiles[index], file: myFiles.item(key) },
+          ]);
         });
       }
     }
   };
+  useEffect(() => {
+    console.log({ imageData });
+    console.log({ imageUrls });
+  }, [imageData, imageUrls]);
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -74,10 +81,11 @@ const EditForm = ({
       formData.append("rawImageUrls", imageUrls);
       formData.append("category", category);
       formData.append("properties", JSON.stringify(productProperties));
-      imageData.forEach((data) => {
-        formData.append(data.name, data);
+      imageData.forEach(({ file }: any) => {
+        formData.append(file.name, file);
       });
-
+      console.log({ imageData });
+      console.log({ imageUrls });
       // Sending data to server
       const response = await updateProduct(formData).unwrap();
       toast.success(response.message);
@@ -104,6 +112,14 @@ const EditForm = ({
       return newProductProps;
     });
   };
+  const handleImageDelete = (imageUrl: string) => {
+    setImageUrls((prev: string[]) =>
+      prev.filter((url: string) => url !== imageUrl)
+    );
+    setImageData((prev: any) =>
+      prev.filter(({ url }: { url: string }) => url !== imageUrl.toString())
+    );
+  };
   useEffect(() => {
     setErrMsg("");
   }, [name, description, price]);
@@ -125,6 +141,7 @@ const EditForm = ({
       setProperties([]);
     }
   }, [categories, category, isCategoryFetched]);
+
 
   const content = updateLoading ? (
     <h1>Loading...</h1>
@@ -211,12 +228,36 @@ const EditForm = ({
               >
                 {imageUrls?.map((image: string, index: number) => {
                   return (
-                    <img
-                      key={index}
-                      className="w-24 h-24 border border-primaryOrangeHex object-cover rounded-lg"
-                      src={image}
-                      alt=""
-                    />
+                    <div className="relative">
+                      <img
+                        key={index}
+                        className="w-24 h-24 border border-primaryOrangeHex object-cover rounded-lg"
+                        src={image}
+                        alt=""
+                      />
+                      <div className="absolute bg-primaryBlackRGBA top-0 bottom-0 right-0 left-0 rounded-lg opacity-0 hover:opacity-100 flex justify-end">
+                        <button
+                          type="button"
+                          className="p-1 bg-primaryRedHex h-fit rounded-lg hover:cursor-pointer"
+                          onClick={() => handleImageDelete(image)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6 text-primaryWhiteHex "
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
                   );
                 })}
               </ReactSortable>

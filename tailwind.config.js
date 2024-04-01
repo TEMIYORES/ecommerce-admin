@@ -31,7 +31,7 @@ export default {
         primaryLightGreyHex: "#52555A",
         secondaryLightGreyHex: "#AEAEAE",
         primaryWhiteHex: "#FFFFFF",
-        primaryBlackRGBA: "rgba(12,15,20,0.5)",
+        primaryBlackRGBA: "rgba(12,15,20,0.3)",
         secondaryBlackRGBA: "rgba(0,0,0,0.7)",
       },
       spacing: {

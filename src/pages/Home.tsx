@@ -1,19 +1,15 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Layout from "../components/Layout";
-import { clearUserInfo, selectUserInfo } from "../features/users/userSlice";
-import { useNavigate } from "react-router";
+import { selectUserInfo } from "../features/users/userSlice";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const Home = () => {
   const userInfo = useSelector(selectUserInfo);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const dispatch = useDispatch();
+  // const navigate = useNavigate();
   const { user } = useAuth0();
   console.log({ user });
-  const signOut = async () => {
-    dispatch(clearUserInfo());
-    navigate("/login");
-  };
+
   return (
     <Layout>
       <div className="text-primaryBlackHex flex justify-between items-center">
@@ -49,7 +45,6 @@ const Home = () => {
           </span>
         </div>
       </div>
-      <button onClick={signOut}>Logout</button>
     </Layout>
   );
 };

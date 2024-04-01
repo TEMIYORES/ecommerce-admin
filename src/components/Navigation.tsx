@@ -1,10 +1,29 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { clearUserInfo } from "../features/users/userSlice";
+import { useDispatch } from "react-redux";
+import { removeAuth } from "../features/auth/authSlice";
+import { clearProduct } from "../features/product/productSlice";
+import { clearProducts } from "../features/product/productsSlice";
+import { useLogoutMutation } from "../features/auth/authApiSlice";
+import { toast } from "react-toastify";
 
 const Navigation = () => {
   const inActiveLink = "flex items-center gap-1 p-1";
   const activeLink =
     inActiveLink + " bg-white text-primaryOrangeHex rounded-l-md";
   const pathname = location.pathname;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [logout] = useLogoutMutation();
+  const signOut = async () => {
+    dispatch(clearUserInfo());
+    dispatch(removeAuth());
+    dispatch(clearProduct());
+    dispatch(clearProducts());
+    const response = await logout({}).unwrap();
+    toast.success(response.message);
+    navigate("/login");
+  };
   return (
     <aside className="text-white p-4 pr-0 min-w-fit">
       <Link to={"/"} className={"flex items-center gap-1 mb-4 mr-4"}>
@@ -129,6 +148,23 @@ const Navigation = () => {
           </svg>
           Settings
         </Link>
+        <button className={`${inActiveLink} p-1`} onClick={signOut}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+            />
+          </svg>
+          Logout
+        </button>
       </nav>
     </aside>
   );
