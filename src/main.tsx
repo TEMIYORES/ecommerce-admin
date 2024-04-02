@@ -22,8 +22,9 @@ import NewProduct from "./components/NewProduct.tsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditProduct from "./components/products/EditProduct.tsx";
-import Test from "./pages/Test.tsx";
 import Categories from "./pages/Categories.tsx";
+import Register from "./features/auth/Register.tsx";
+import Unauthorized from "./pages/unauthorized.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,6 +32,7 @@ const router = createBrowserRouter(
       {/*start- Public routes */}
       {/* <Route index={true} element={<Home />} /> */}
       <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />
 
       {/*end- Public routes */}
 
@@ -44,8 +46,6 @@ const router = createBrowserRouter(
           }
         >
           <Route index={true} element={<Home />} />
-          <Route path="test" element={<Test />} />
-
           <Route path="products">
             <Route index={true} element={<Products />} />
             <Route path="edit/:id" element={<EditProduct />} />
@@ -57,6 +57,7 @@ const router = createBrowserRouter(
         </Route>
       </Route>
       {/*end- protected routes */}
+      <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="*" element={<NotFound />} />
     </Route>
   )

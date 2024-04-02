@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { setAuth } from "./authSlice";
 import { useLoginMutation } from "./authApiSlice";
 import { useAuth0 } from "@auth0/auth0-react";
+import useToggle from "../../hooks/useToggle";
 
 const Login = () => {
   const { user, loginWithRedirect, isAuthenticated, logout } = useAuth0();
@@ -22,7 +23,7 @@ const Login = () => {
   const [errMsg, setErrMsg] = useState("");
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
-  // const [check, toggleCheck] = useToggle("persist", false);
+  const [check, toggleCheck] = useToggle("persist", false);
   useEffect(() => {
     userRef?.current?.focus();
   }, []);
@@ -196,19 +197,22 @@ const Login = () => {
             </button>
           )}
 
-          {/* <div>
+          <div className="w-full gap-2 flex justify-start items-center">
             <input
               type="checkbox"
               id="persist"
+              className="w-fit m-0"
               onChange={toggleCheck}
               checked={check}
             />
-            <label htmlFor="persist"> Trust This Device?</label>
-          </div> */}
+            <label htmlFor="persist" className="m-0">
+              Trust This Device?
+            </label>
+          </div>
         </form>
         <div>
           Need an Account?{" "}
-          <Link to={"/"} className="underline">
+          <Link to={"/register"} className="underline">
             Register
           </Link>
         </div>

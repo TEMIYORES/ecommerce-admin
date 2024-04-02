@@ -23,24 +23,6 @@ const UploadImage = ({
         files.push(URL.createObjectURL(myFiles.item(key)));
       });
       updateImages(files, myFiles);
-      // try {
-      // const response = await newUpload({ id, formData }).unwrap();
-      // toast.success(response.message);
-      // } catch (err: any) {
-      //   if (!err?.data) {
-      //     console.log(err);
-      //     toast.error("No server response");
-      //   } else if (
-      //     err?.status === 400 ||
-      //     err?.status === 401 ||
-      //     err?.status === 422 ||
-      //     err?.status === 413
-      //   ) {
-      //     toast.error(err.data.message);
-      //   } else {
-      //     toast.error("Upload Failed");
-      //   }
-      // }
     }
   };
 
