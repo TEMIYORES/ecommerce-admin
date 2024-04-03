@@ -16,6 +16,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
   //   }
   // }, [data]);
   const [showNav, setShowNav] = useState(false);
+  const handleSetShowNav = (value: boolean) => {
+    setShowNav(value);
+  };
   return (
     <div className="w-full bg-secondaryLightGreyHex min-h-screen">
       <div className="flex items-center md:hidden p-4">
@@ -26,7 +29,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6"
+            className="w-6 h-6 text-primaryGreyHex"
           >
             <path
               strokeLinecap="round"
@@ -41,7 +44,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       </div>
 
       <div className="flex">
-        <Navigation show={showNav} />
+        <Navigation show={showNav} setShowNav={handleSetShowNav} />
         <div className="relative text-primaryBlackHex flex-grow p-4">
           {children}
         </div>

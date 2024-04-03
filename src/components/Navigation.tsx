@@ -8,7 +8,13 @@ import { useLogoutMutation } from "../features/auth/authApiSlice";
 import { toast } from "react-toastify";
 import Logo from "./Logo";
 
-const Navigation = ({ show }: { show: boolean }) => {
+const Navigation = ({
+  show,
+  setShowNav,
+}: {
+  show: boolean;
+  setShowNav: (value: boolean) => void;
+}) => {
   const inActiveLink = "flex items-center gap-1 p-1";
   const activeLink =
     inActiveLink + " bg-primaryLightOrangeHex text-primaryOrangeHex rounded-md";
@@ -32,6 +38,27 @@ const Navigation = ({ show }: { show: boolean }) => {
         " z-50 top-0 text-secondaryDarkGreyHex font-semibold p-4 fixed bg-secondaryLightGreyHex w-full h-full md:static md:min-w-fit md:w-fit transition-all"
       }
     >
+      <div className="w-full flex justify-end">
+        <button
+          className="bg-transparent p-0"
+          onClick={() => setShowNav(false)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6 text-primaryGreyHex"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
       <div className="mb-4 mr-4">
         <Logo />
       </div>

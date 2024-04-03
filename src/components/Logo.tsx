@@ -4,9 +4,7 @@ const Logo = () => {
   return (
     <Link
       to={"/"}
-      className={
-        "flex text-primaryLightGreyHex font-semibold items-center gap-1"
-      }
+      className={"flex text-primaryGreyHex font-semibold items-center gap-1"}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
