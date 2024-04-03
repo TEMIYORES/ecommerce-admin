@@ -29,6 +29,7 @@ const baseQueryWithRefreshToken = async (
     api.dispatch(clearUserInfo());
   }
   //   if accessToken has expired
+  console.log(result?.error?.status);
   if (result?.error?.status === 401) {
     // Request a new accessToken with the RefreshToken
     const refreshResult = await baseQuery("/refresh", api, extraOptions);

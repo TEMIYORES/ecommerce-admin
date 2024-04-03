@@ -38,6 +38,7 @@ const router = createBrowserRouter(
 
       {/*start- protected routes */}
       <Route element={<PersistLogin />}>
+        <Route index={true} element={<Home />} />
         <Route
           element={
             <RequireAuth
@@ -45,7 +46,6 @@ const router = createBrowserRouter(
             />
           }
         >
-          <Route index={true} element={<Home />} />
           <Route path="products">
             <Route index={true} element={<Products />} />
             <Route path="edit/:id" element={<EditProduct />} />

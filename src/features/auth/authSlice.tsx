@@ -26,10 +26,8 @@ const authSlice = createSlice({
       state.id = decoded?.userInfo.id;
       state.roles = decoded?.userInfo?.roles;
     },
-    removeAuth: (state) => {
-      state.id = null;
-      state.accessToken = null;
-      state.roles = null;
+    removeAuth: () => {
+      return initialState;
     },
   },
 });

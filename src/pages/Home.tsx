@@ -1,17 +1,35 @@
 import { useSelector } from "react-redux";
 import Layout from "../components/Layout";
-import { selectUserInfo } from "../features/users/userSlice";
-import { useAuth0 } from "@auth0/auth0-react";
+import { selectCurrentId } from "../features/auth/authSlice";
+import { useUserInfoQuery } from "../features/users/userApiSlice";
 
 const Home = () => {
-  const userInfo = useSelector(selectUserInfo);
+  // const userInfo = useSelector(selectUserInfo);
   // const dispatch = useDispatch();
   // const navigate = useNavigate();
-  const { user } = useAuth0();
-  console.log({ user });
-
-  return (
-    <Layout>
+  const id = useSelector(selectCurrentId);
+  const {
+    data: userInfo,
+    isLoading,
+    isError,
+    isSuccess,
+    error,
+  } = useUserInfoQuery({
+    id,
+  });
+  // useEffect(() => {
+  //   console.log(data);
+  //   if (!isLoading && !isError) {
+  //     dispatch(setUserInfo(data));
+  //   }
+  // }, [data]);
+  // const { user } = useAuth0();
+  // console.log({ user });
+  let content;
+  if (isLoading) {
+    content = <h1>Loading...</h1>;
+  } else if (isSuccess) {
+    content = (
       <div className="text-primaryBlackHex flex justify-between items-center">
         <h2>
           Hello,{" "}
@@ -45,8 +63,11 @@ const Home = () => {
           </span>
         </div>
       </div>
-    </Layout>
-  );
+    );
+  } else if (isError) {
+    content = <p>{JSON.stringify(error)}</p>;
+  }
+  return <Layout>{content}</Layout>;
 };
 
 export default Home;

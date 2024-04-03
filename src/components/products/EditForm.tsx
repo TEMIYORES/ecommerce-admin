@@ -142,7 +142,6 @@ const EditForm = ({
     }
   }, [categories, category, isCategoryFetched]);
 
-
   const content = updateLoading ? (
     <h1>Loading...</h1>
   ) : (
@@ -196,8 +195,13 @@ const EditForm = ({
       {properties?.length
         ? properties?.map((property) => {
             return (
-              <div key={property.name} className="flex gap-1">
-                {property.name}
+              <div
+                key={property.name}
+                className="w-full flex gap-1 items-center"
+              >
+                <p className="inline whitespace-nowrap text-primaryOrangeHex font-semibold text-sm mb-2">
+                  {property.name[0].toUpperCase() + property.name.substring(1)}
+                </p>
                 <select
                   required
                   value={productProperties[property.name]}
@@ -220,15 +224,15 @@ const EditForm = ({
         <p>Only 4 photos can be uploaded.</p>
         <div className="flex items-center gap-2">
           {imageUrls ? (
-            <div className="flex items-center mt-2 gap-2">
+            <div className="flex flex-wrap items-start mt-2 gap-2">
               <ReactSortable
-                className="flex items-center gap-2"
+                className="flex flex-wrap justify-start items-center gap-2"
                 list={imageUrls}
                 setList={setImageUrls}
               >
                 {imageUrls?.map((image: string, index: number) => {
                   return (
-                    <div className="relative">
+                    <div className="relative shadow-lg rounded-lg">
                       <img
                         key={index}
                         className="w-24 h-24 border border-primaryOrangeHex object-cover rounded-lg"

@@ -1,15 +1,16 @@
 import { useEffect } from "react";
-import { Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { selectCurrentToken } from "./authSlice";
 import { useSelector } from "react-redux";
 import { useRefreshQuery } from "../refresh/refreshApiSlice";
 
 const PersistLogin = () => {
-  const { isLoading } = useRefreshQuery();
+  const { isLoading, isSuccess } = useRefreshQuery({});
   const accessToken = useSelector(selectCurrentToken);
   const [persist] = useLocalStorage("persist", false);
 
+  const pathname = location?.pathname;
   useEffect(() => {
     console.log("loading", isLoading);
   }, [accessToken, isLoading]);
@@ -19,8 +20,10 @@ const PersistLogin = () => {
         <Outlet />
       ) : isLoading ? (
         <p>Loading</p>
-      ) : (
+      ) : isSuccess ? (
         <Outlet />
+      ) : (
+        <Navigate to={"/login"} state={{ from: pathname }} />
       )}
     </>
   );

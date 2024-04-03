@@ -18,11 +18,8 @@ const userSlice = createSlice({
     setUserInfo: (_state, action) => {
       return action.payload;
     },
-    clearUserInfo: (state) => {
-      state.name = null;
-      state.email = null;
-      state.picture = null;
-     
+    clearUserInfo: () => {
+      return initialState;
     },
   },
 });

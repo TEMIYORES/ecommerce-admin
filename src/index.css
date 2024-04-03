@@ -8,8 +8,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #0c0f14;
+  color: #252a32;
+  background-color: #e5e7eb;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -71,7 +71,6 @@
 }
 
 a {
-  font-weight: 500;
   text-decoration: inherit;
 }
 
@@ -87,7 +86,7 @@ h1 {
 }
 
 button {
-  @apply bg-primaryOrangeHex text-primaryWhiteHex px-4 py-2 rounded-md;
+  @apply flex justify-center items-center gap-1 text-sm bg-primaryOrangeHex text-primaryWhiteHex px-4 py-2 rounded-sm font-semibold;
 }
 /* button:hover {
   border-color: #646cff;
@@ -100,7 +99,7 @@ button:focus-visible {
 input,
 textarea,
 select {
-  @apply border-2 border-secondaryLightGreyHex w-full rounded-md box-border py-1 px-2 mb-2 text-primaryBlackHex;
+  @apply border border-primaryLightGreyHex w-full rounded-sm box-border py-1 px-2 mb-2 text-primaryGreyHex;
   @apply bg-primaryWhiteHex outline-none;
 }
 input:focus,
@@ -110,24 +109,27 @@ select:focus {
 }
 
 h1 {
-  @apply text-primaryOrangeHex mb-2 text-2xl font-bold;
+  @apply text-primaryGreyHex mb-2 text-2xl font-bold;
 }
 
 label {
   @apply text-primaryOrangeHex mb-1 text-lg font-semibold;
 }
 table.basic {
-  @apply w-full;
+  @apply w-full bg-primaryWhiteHex text-center;
 }
-table.basic tr td {
-  @apply border border-primaryGreyHex p-1;
+table.basic,
+th,
+td {
+  @apply border border-primaryGreyHex p-1 text-sm;
 }
-table.basic thead tr td {
-  @apply bg-primaryLightOrangeHex font-semibold;
+table.basic tr th {
+  @apply bg-primaryLightOrangeHex font-semibold uppercase;
 }
 
-table.basic a,
-table.basic button,
-button.btnflex {
-  @apply flex justify-center items-center gap-1 bg-primaryOrangeHex text-primaryWhiteHex px-4 py-2 rounded-md;
+button.delete {
+  @apply bg-brightRed text-darkRed;
+}
+button.clickbtn {
+  @apply bg-primaryOrangeHex;
 }

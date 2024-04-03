@@ -44,9 +44,9 @@ const DeleteProduct = ({
     content = <p>Loading...</p>;
   }
   content = (
-    <div className="z-10 bg-white absolute top-0 left-0 right-0 bottom-0 rounded-lg">
+    <div className="z-10 bg-secondaryLightGreyHex absolute top-0 left-0 right-0 bottom-0 rounded-lg">
       <div className=" min-h-[50%] flex-grow flex justify-center items-center">
-        <div className="border-2 border-primaryOrangeHex p-4 rounded-lg">
+        <div className="border-2 bg-primaryWhiteHex border-primaryOrangeHex p-4 rounded-lg">
           <p>
             Do you really want to{" "}
             <span className="text-primaryRedHex uppercase font-semibold">
@@ -55,7 +55,7 @@ const DeleteProduct = ({
             product {name}?
           </p>
           <div className="w-full flex justify-center gap-2 mt-4">
-            <button className="bg-primaryRedHex" onClick={deleteProductFn}>
+            <button className="delete" onClick={deleteProductFn}>
               Yes
             </button>
             <button onClick={goBack}>No</button>

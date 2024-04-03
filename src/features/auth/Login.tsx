@@ -1,5 +1,5 @@
 import { ChangeEvent, useRef, useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setAuth } from "./authSlice";
@@ -10,8 +10,8 @@ import useToggle from "../../hooks/useToggle";
 const Login = () => {
   const { user, loginWithRedirect, isAuthenticated, logout } = useAuth0();
   const navigate = useNavigate();
-  //   const location = useLocation();
-  //   const from = location?.state?.from?.pathname;
+  const location = useLocation();
+  const from = location?.state?.from;
   const userRef = useRef<HTMLInputElement>(null);
   const errRef = useRef<HTMLParagraphElement>(null);
 
@@ -64,7 +64,8 @@ const Login = () => {
       setEmail("");
       setPassword("");
       toast.success("Login Successful");
-      navigate("/", { replace: true });
+      console.log({ from });
+      navigate(from || "/", { replace: true });
       //   Clear input fields
     } catch (err: any) {
       console.log(err);
@@ -105,7 +106,8 @@ const Login = () => {
       setEmail("");
       setPassword("");
       toast.success("Login Successful");
-      navigate("/", { replace: true });
+      console.log({ from });
+      navigate(from || "/", { replace: true });
       //   Clear input fields
     } catch (err: any) {
       if (!err?.data) {
