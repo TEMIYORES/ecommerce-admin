@@ -269,7 +269,7 @@ const Categories = () => {
         {isEditing ? `Edit Category ${name}` : "New Category Name"}
       </label>
       <form onSubmit={handleSubmit} className="flex flex-col gap-1">
-        <div className="flex gap-1">
+        <div className="flex gap-1 flex-wrap md:flex-nowrap">
           <input
             required
             className="mb-0"
@@ -319,7 +319,7 @@ const Categories = () => {
               return (
                 <div
                   key={index.toString()}
-                  className="flex flex-wrap gap-1 my-2 items-center"
+                  className="flex gap-1 my-2 items-center flex-wrap md:flex-nowrap"
                 >
                   <input
                     type="text"

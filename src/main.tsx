@@ -25,6 +25,7 @@ import EditProduct from "./components/products/EditProduct.tsx";
 import Categories from "./pages/Categories.tsx";
 import Register from "./features/auth/Register.tsx";
 import Unauthorized from "./pages/unauthorized.tsx";
+import Order from "./pages/Order.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -52,7 +53,10 @@ const router = createBrowserRouter(
             <Route path="new" element={<NewProduct />} />
           </Route>
           <Route path="categories" element={<Categories />} />
-          <Route path="orders" element={<Orders />} />
+          <Route path="orders">
+            <Route index={true} element={<Orders />} />
+            <Route path=":id" element={<Order />} />
+          </Route>
           <Route path="settings" element={<Settings />} />
         </Route>
       </Route>

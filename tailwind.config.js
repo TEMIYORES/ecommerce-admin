@@ -33,6 +33,8 @@ export default {
         primaryWhiteHex: "#FFFFFF",
         brightRed: "#fecaca",
         darkRed: "#991b1b",
+        brightGreen: "#bbf7d0",
+        darkGreen: "#166534",
         primaryBlackRGBA: "rgba(12,15,20,0.3)",
         secondaryBlackRGBA: "rgba(0,0,0,0.7)",
       },

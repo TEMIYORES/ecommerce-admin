@@ -3,7 +3,7 @@ import { setAuth } from "../../features/auth/authSlice";
 import { clearUserInfo } from "../../features/users/userSlice";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:3500/api",
+  baseUrl: "https://ecommart.glitch.me/api",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const accessToken = getState().auth.accessToken;

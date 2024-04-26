@@ -133,3 +133,12 @@ button.delete {
 button.clickbtn {
   @apply bg-primaryOrangeHex;
 }
+tr.tableRowHover {
+  @apply hover:bg-secondaryLightGreyHex cursor-pointer;
+}
+button.statusPaid {
+  @apply bg-brightGreen text-darkGreen text-sm w-[100px];
+}
+button.statusNotPaid {
+  @apply bg-brightRed text-darkRed text-sm w-[100px];
+}
