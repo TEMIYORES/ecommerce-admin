@@ -38,7 +38,7 @@ const Navigation = ({
         " z-50 top-0 text-secondaryDarkGreyHex font-semibold p-4 fixed bg-secondaryLightGreyHex w-full h-full md:static md:min-w-fit md:w-fit transition-all"
       }
     >
-      <div className="w-full flex justify-end">
+      <div className="w-full flex justify-end md:hidden">
         <button
           className="bg-transparent p-0"
           onClick={() => setShowNav(false)}

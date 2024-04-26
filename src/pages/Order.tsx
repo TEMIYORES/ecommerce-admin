@@ -24,6 +24,9 @@ const Order = () => {
     if (order) {
       content = (
         <div className="bg-primaryWhiteHex max-w-[600px] p-10">
+          <h2 className="text-2xl font-semibold uppercase text-center mb-5">
+            Eccomart Order Invoice
+          </h2>
           <div className="flex justify-between items-center">
             <div>
               <h2 className="font-semibold">Total Amount</h2>
@@ -75,6 +78,10 @@ const Order = () => {
               <p>{order.customerInformation.email}</p>
             </div>
             <div className="flex justify-between items-center">
+              <p>Phone Number: </p>
+              <p>{order.customerInformation.phoneNumber}</p>
+            </div>
+            <div className="flex justify-between items-center">
               <p>Address: </p>
               <p>{order.customerInformation.streetAddress}</p>
             </div>
@@ -109,7 +116,6 @@ const Order = () => {
 
   return (
     <Layout>
-      <h1>Order Invoice</h1>
       <p
         ref={errRef}
         aria-live="assertive"

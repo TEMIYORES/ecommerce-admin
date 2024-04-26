@@ -86,7 +86,7 @@ h1 {
 }
 
 button {
-  @apply flex justify-center items-center gap-1 text-sm bg-primaryOrangeHex text-primaryWhiteHex px-4 py-2 rounded-sm font-semibold;
+  @apply flex justify-center items-center gap-1 text-sm bg-primaryOrangeHex text-primaryWhiteHex px-4 py-2 rounded-md font-semibold;
 }
 /* button:hover {
   border-color: #646cff;
@@ -99,7 +99,7 @@ button:focus-visible {
 input,
 textarea,
 select {
-  @apply border border-primaryLightGreyHex w-full rounded-sm box-border py-1 px-2 mb-2 text-primaryGreyHex;
+  @apply border border-primaryLightGreyHex w-full rounded-md box-border py-1 px-2 mb-2 text-primaryGreyHex;
   @apply bg-primaryWhiteHex outline-none;
 }
 input:focus,

@@ -158,7 +158,7 @@ const NewProduct = () => {
           </svg>
           {errMsg}
         </p>
-        <label htmlFor="product_name">Product Name</label>
+        <label htmlFor="product_name">Name</label>
         <input
           type="text"
           placeholder="Product Name"
@@ -166,7 +166,12 @@ const NewProduct = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+        <label htmlFor="product_category">Category</label>
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          id="product_category"
+        >
           <option value={""}>Uncategorized</option>
           {fetchingCategories && <option>loading...</option>}
           {isCategoryFetched &&
