@@ -102,6 +102,7 @@ select {
   @apply border border-primaryLightGreyHex w-full rounded-md box-border py-1 px-2 mb-2 text-primaryGreyHex;
   @apply bg-primaryWhiteHex outline-none;
 }
+
 input:focus,
 textarea:focus,
 select:focus {

@@ -77,15 +77,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         draggable
         draggablePercent={60}
       />
-      <Auth0Provider
-        domain={import.meta.env.VITE_AUTH0_DOMAIN || ""}
-        clientId={import.meta.env.VITE_AUTH0_CLIENT_ID || ""}
-        authorizationParams={{
-          redirect_uri: window.location.origin + "/login",
-        }}
-      >
         <RouterProvider router={router} />
-      </Auth0Provider>
     </Provider>
   </>
 );

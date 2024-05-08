@@ -218,7 +218,6 @@ const Login = () => {
             Register
           </Link>
         </div>
-        <div></div>
       </div>
     </section>
   );

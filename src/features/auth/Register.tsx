@@ -113,7 +113,7 @@ const Register = () => {
   }, [email, name, password, matchPassword]);
 
   return (
-    <section className="flex w-[100vw] h-[100vh] place-items-center justify-center">
+    <section className="flex w-full min-h-[100vh] place-items-center justify-center">
       <div className="flex w-[500px] min-h-[400px] flex-col gap-5 border-2 border-white rounded-lg p-5">
         <p
           ref={errRef}
@@ -127,8 +127,8 @@ const Register = () => {
           {errMsg}
         </p>
         <h2 className="font-bold text-size_30">Register</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <div className="flex flex-col gap-2 text-size_18">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+          <div className="flex flex-col text-size_18">
             <label
               htmlFor="email"
               className="font-semibold flex gap-2 items-center"
@@ -176,7 +176,7 @@ const Register = () => {
               aria-describedby="uidnote"
               autoComplete="off"
               type="text"
-              className="border-2 border-primaryWhiteHex rounded-md p-2"
+              className="border-primaryWhiteHex"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onFocus={() => setIsEmailFocus(true)}
@@ -209,7 +209,7 @@ const Register = () => {
           </div>
           <div className="flex flex-col gap-2 text-size_18">
             <label
-              htmlFor="username"
+              htmlFor="name"
               className="font-semibold flex gap-2 items-center"
             >
               Name:
@@ -247,14 +247,14 @@ const Register = () => {
               </span>
             </label>
             <input
-              id="username"
-              name="username"
+              id="name"
+              name="name"
               required
               aria-invalid={isValidName ? "false" : "true"}
               aria-describedby="uidnote"
               autoComplete="off"
               type="text"
-              className="border-2 border-primaryWhiteHex rounded-md p-2"
+              className="border-primaryWhiteHex"
               value={name}
               onChange={(e) => setName(e.target.value)}
               onFocus={() => setIsNameFocus(true)}
@@ -333,7 +333,7 @@ const Register = () => {
               aria-invalid={isValidPassword ? "false" : "true"}
               aria-describedby="passwordnote"
               type="password"
-              className="border-2 border-primaryWhiteHex rounded-md p-2"
+              className="border-primaryWhiteHex"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onFocus={() => setIsPasswordFocus(true)}
@@ -343,7 +343,7 @@ const Register = () => {
               id="passwordnote"
               className={
                 isPasswordFocus && !isValidPassword
-                  ? "relative bottom-[-10px] bg-primaryGreyHex text-primaryWhiteHex rounded-radius_10 p-space_10"
+                  ? "relative bg-primaryGreyHex text-primaryWhiteHex rounded-radius_10 p-space_10"
                   : "hidden"
               }
             >
@@ -428,7 +428,7 @@ const Register = () => {
               aria-invalid={isValidMatchPassword ? "false" : "true"}
               aria-describedby="matchpasswordnote"
               type="password"
-              className="border-2 border-primaryWhiteHex rounded-md p-2"
+              className="border-primaryWhiteHex"
               value={matchPassword}
               onChange={(e) => setMatchPassword(e.target.value)}
               onFocus={() => setIsMatchPasswordFocus(true)}
@@ -438,7 +438,7 @@ const Register = () => {
               id="matchpasswordnote"
               className={
                 isMatchPasswordFocus && !isValidMatchPassword
-                  ? "relative bottom-[-10px] bg-primaryGreyHex text-primaryWhiteHex rounded-radius_10 p-space_10"
+                  ? "relative bg-primaryGreyHex text-primaryWhiteHex rounded-radius_10 p-space_10"
                   : "hidden"
               }
             >
